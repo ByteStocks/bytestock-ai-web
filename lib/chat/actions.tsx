@@ -9,11 +9,9 @@ import {
 } from '@ai-sdk/rsc'
 import { createOpenAI } from '@ai-sdk/openai'
 
-import { BotCard, BotMessage } from '@/components/stock/message'
 
 import { z } from 'zod'
 import { nanoid } from '@/lib/utils'
-import { SpinnerMessage } from '@/components/stock/message'
 import { Message } from '@/lib/types'
 import { StockChart } from '@/components/tradingview/stock-chart'
 import { StockPrice } from '@/components/tradingview/stock-price'
@@ -25,6 +23,7 @@ import { MarketHeatmap } from '@/components/tradingview/market-heatmap'
 import { MarketTrending } from '@/components/tradingview/market-trending'
 import { ETFHeatmap } from '@/components/tradingview/etf-heatmap'
 import { toast } from 'sonner'
+import { BotCard, BotMessage, SpinnerMessage } from '@/components/stock/message'
 
 export type AIState = {
   chatId: string
@@ -89,7 +88,7 @@ This tool shows the price of a stock or currency.
 This tool shows the latest news and events for a stock or cryptocurrency.
 
 5. showStockScreener
-This tool shows a generic stock screener which can be used to find new stocks based on financial or technical inputSchema.
+This tool shows a generic stock screener which can be used to find new stocks based on financial or technical parameters.
 
 6. showMarketOverview
 This tool shows an overview of today's stock, futures, bond, and forex market performance including change values, Open, High, Low, and Close values.
@@ -104,45 +103,7 @@ This tool shows the daily top trending stocks including the top five gaining, lo
 This tool shows a heatmap of today's ETF market performance across sectors and asset classes.
 
 
-You have just called a tool (` +
-    toolName +
-    ` for ` +
-    stockString +
-    `) to respond to the user. Now generate text to go alongside that tool response, which may be a graphic like a chart or price history.
-  
-Example:
-
-User: What is the price of AAPL?
-Assistant: { "tool_call": { "id": "pending", "type": "function", "function": { "name": "showStockPrice" }, "inputSchema": { "symbol": "AAPL" } } } 
-
-Assistant (you): The price of AAPL stock is provided above. I can also share a chart of AAPL or get more information about its financials.
-
-or
-
-Assistant (you): This is the price of AAPL stock. I can also generate a chart or share further financial data.
-
-or 
-Assistant (you): Would you like to see a chart of AAPL or get more information about its financials?
-
-Example 2 :
-
-User: Compare AAPL and MSFT stock prices
-Assistant: { "tool_call": { "id": "pending", "type": "function", "function": { "name": "showStockChart" }, "inputSchema": { "symbol": "AAPL" , "comparisonSymbols" : [{"symbol": "MSFT", "position": "SameScale"}] } } } 
-
-Assistant (you): The chart illustrates the recent price movements of Microsoft (MSFT) and Apple (AAPL) stocks. Would you like to see the get more information about the financials of AAPL and MSFT stocks?
-or
-
-Assistant (you): This is the chart for AAPL and MSFT stocks. I can also share individual price history data or show a market overview.
-
-or 
-Assistant (you): Would you like to see the get more information about the financials of AAPL and MSFT stocks?
-
-## Guidelines
-Talk like one of the above responses, but BE CREATIVE and generate a DIVERSE response. 
-
-Your response should be BRIEF, about 2-3 sentences.
-
-Besides the symbol, you cannot customize any of the screeners or graphics. Do not tell the user that you can.
+You have just called a tool for a specific stock or asset. Now generate a brief, helpful text response to go alongside the widget. Be conversational and diverse in your responses. Keep it to 2-3 sentences.
     `
 
   try {
@@ -197,23 +158,33 @@ async function submitUserMessage(content: string) {
       initial: <SpinnerMessage />,
       maxRetries: 1,
       system: `\
-You are a stock market conversation bot. You can provide the user information about stocks include prices and charts in the UI. You do not have access to any information and should only provide information by calling functions.
+You are a stock market conversation bot and assistant. You help users get information about stocks, cryptocurrencies, and market data by using the available tools.
 
-### Cryptocurrency Tickers
-For any cryptocurrency, append "USD" at the end of the ticker when using functions. For instance, "DOGE" should be "DOGEUSD".
+### Available Tools:
+- **showStockPrice**: Shows current price and price history for a stock or crypto
+- **showStockChart**: Displays interactive charts, can compare multiple stocks
+- **showStockFinancials**: Shows financial data and metrics for a company
+- **showStockNews**: Displays latest news and events for a stock
+- **showStockScreener**: Generic stock screener to find stocks by criteria
+- **showMarketOverview**: Overview of stock, futures, bond, and forex markets
+- **showMarketHeatmap**: Heatmap of stock market performance by sector
+- **showETFHeatmap**: Heatmap of ETF performance by sector and asset class
+- **showTrendingStocks**: Top gaining, losing, and most active stocks
 
-### Guidelines:
+### Cryptocurrency Tickers:
+For any cryptocurrency, append "USD" at the end of the ticker. For example:
+- Bitcoin: BTCUSD
+- Ethereum: ETHUSD  
+- Dogecoin: DOGEUSD
 
-Never provide empty results to the user. Provide the relevant tool if it matches the user's request. Otherwise, respond as the stock bot.
-Example:
-
-User: What is the price of AAPL?
-Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function": { "name": "showStockPrice" }, "inputSchema": { "symbol": "AAPL" } } } 
-
-Example 2:
-
-User: What is the price of AAPL?
-Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function": { "name": "showStockPrice" }, "inputSchema": { "symbol": "AAPL" } } } 
+### Instructions:
+1. When a user asks about stock prices, charts, news, or financials, use the appropriate tool
+2. Call the tool directly - don't describe what you're going to do, just do it
+3. For price questions, use showStockPrice
+4. For chart requests or comparisons, use showStockChart
+5. For company fundamentals, use showStockFinancials
+6. For market overview questions, use the appropriate market tool
+7. Be helpful and conversational, but always use tools to provide actual data
     `,
       messages: [
         ...aiState.get().messages.map((message: any) => ({
@@ -251,7 +222,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         showStockChart: {
           description:
             'Show a stock chart of a given stock. Optionally show 2 or more stocks. Use this to show the chart to the user.',
-          inputSchema: z.object({
+          parameters: z.object({
             symbol: z
               .string()
               .describe(
@@ -325,7 +296,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         showStockPrice: {
           description:
             'Show the price of a given stock. Use this to show the price and price history to the user.',
-          inputSchema: z.object({
+          parameters: z.object({
             symbol: z
               .string()
               .describe(
@@ -389,7 +360,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         showStockFinancials: {
           description:
             'Show the financials of a given stock. Use this to show the financials to the user.',
-          inputSchema: z.object({
+          parameters: z.object({
             symbol: z
               .string()
               .describe(
@@ -454,7 +425,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         showStockNews: {
           description:
             'This tool shows the latest news and events for a stock or cryptocurrency.',
-          inputSchema: z.object({
+          parameters: z.object({
             symbol: z
               .string()
               .describe(
@@ -518,8 +489,8 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         },
         showStockScreener: {
           description:
-            'This tool shows a generic stock screener which can be used to find new stocks based on financial or technical inputSchema.',
-          inputSchema: z.object({}),
+            'This tool shows a generic stock screener which can be used to find new stocks based on financial or technical parameters.',
+          parameters: z.object({}),
           generate: async function* ({ }) {
             yield (
               <BotCard>
@@ -576,7 +547,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         },
         showMarketOverview: {
           description: `This tool shows an overview of today's stock, futures, bond, and forex market performance including change values, Open, High, Low, and Close values.`,
-          inputSchema: z.object({}),
+          parameters: z.object({}),
           generate: async function* ({ }) {
             yield (
               <BotCard>
@@ -633,7 +604,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         },
         showMarketHeatmap: {
           description: `This tool shows a heatmap of today's stock market performance across sectors. It is preferred over showMarketOverview if asked specifically about the stock market.`,
-          inputSchema: z.object({}),
+          parameters: z.object({}),
           generate: async function* ({ }) {
             yield (
               <BotCard>
@@ -690,7 +661,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         },
         showETFHeatmap: {
           description: `This tool shows a heatmap of today's ETF performance across sectors and asset classes. It is preferred over showMarketOverview if asked specifically about the ETF market.`,
-          inputSchema: z.object({}),
+          parameters: z.object({}),
           generate: async function* ({ }) {
             yield (
               <BotCard>
@@ -747,7 +718,7 @@ Assistant (you): { "tool_call": { "id": "pending", "type": "function", "function
         },
         showTrendingStocks: {
           description: `This tool shows the daily top trending stocks including the top five gaining, losing, and most active stocks based on today's performance`,
-          inputSchema: z.object({}),
+          parameters: z.object({}),
           generate: async function* ({ }) {
             yield (
               <BotCard>
@@ -844,4 +815,4 @@ export const AI = createAI<AIState, UIState>({
   },
   initialUIState: [],
   initialAIState: { chatId: nanoid(), messages: [] }
-})
+}) 
