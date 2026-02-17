@@ -1,7 +1,7 @@
 export const NAV_ITEMS = [
     { href: '/', label: 'Dashboard' },
     { href: '/search', label: 'Search' },
-     { href: '/ai', label: 'AI Chat' },
+     { href: '/mcp', label: 'MCP' },
 ];
 
 // Sign-up form select options
