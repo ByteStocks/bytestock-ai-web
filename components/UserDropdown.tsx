@@ -1,5 +1,6 @@
 'use client';
 
+import Link from "next/link";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,18 +10,26 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {useRouter} from "next/navigation";
-import {Button} from "@/components/ui/button";
-import {LogOut} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 import NavItems from "@/components/NavItems";
-import {signOut} from "@/lib/actions/auth.actions";
+import { signOut } from "@/lib/actions/auth.actions";
 
-const UserDropdown = ({ user, initialStocks }: {user: User, initialStocks: StockWithWatchlistStatus[]}) => {
+const UserDropdown = ({ user, initialStocks }: { user?: User | null, initialStocks: StockWithWatchlistStatus[] }) => {
     const router = useRouter();
 
     const handleSignOut = async () => {
         await signOut();
         router.push("/sign-in");
+    }
+
+    if (!user) {
+        return (
+            <Button asChild className="bg-yellow-500 text-yellow-900 hover:bg-yellow-400">
+                <Link href="/sign-in">Sign in</Link>
+            </Button>
+        );
     }
 
     return (
@@ -57,12 +66,12 @@ const UserDropdown = ({ user, initialStocks }: {user: User, initialStocks: Stock
                         </div>
                     </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-gray-600"/>
+                <DropdownMenuSeparator className="bg-gray-600" />
                 <DropdownMenuItem onClick={handleSignOut} className="text-gray-100 text-md font-medium focus:bg-transparent focus:text-yellow-500 transition-colors cursor-pointer">
                     <LogOut className="h-4 w-4 mr-2 hidden sm:block" />
                     Logout
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="hidden sm:block bg-gray-600"/>
+                <DropdownMenuSeparator className="hidden sm:block bg-gray-600" />
                 <nav className="sm:hidden">
                     <NavItems initialStocks={initialStocks} />
                 </nav>
