@@ -5,6 +5,12 @@ import { handleUserCreated } from '@/lib/actions/auth.actions';
 
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
 
+type ClerkUserCreatedData = {
+    email_addresses?: Array<{ email_address?: string }>;
+    first_name?: string | null;
+    last_name?: string | null;
+};
+
 export async function POST(request: NextRequest) {
     try {
         if (!webhookSecret) {
@@ -28,12 +34,15 @@ export async function POST(request: NextRequest) {
             'svix-id': svixId,
             'svix-timestamp': svixTimestamp,
             'svix-signature': svixSignature,
-        }) as { type: string; data: any };
+        }) as { type: string; data: ClerkUserCreatedData };
 
         if (evt.type === 'user.created') {
             const { email_addresses, first_name, last_name } = evt.data;
             const email = email_addresses?.[0]?.email_address;
-            const name = first_name || last_name || email?.split('@')[0] || 'User';
+            if (!email) {
+                return NextResponse.json({ error: 'No email in webhook payload' }, { status: 400 });
+            }
+            const name = first_name || last_name || email.split('@')[0] || 'User';
 
             await handleUserCreated({
                 email,

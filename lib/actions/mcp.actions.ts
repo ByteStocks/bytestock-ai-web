@@ -1,10 +1,18 @@
 'use server'
 
+export type BrokerConnection = {
+  id: string
+  broker: string
+  label: string
+  tokenHint: string
+  updatedAt: string
+}
+
 export async function saveBrokerConnection(data: {
   broker: string
   label: string
   accessToken: string
-}): Promise<{ success: boolean; message: string; connection?: any }> {
+}): Promise<{ success: boolean; message: string; connection?: BrokerConnection }> {
   // TODO: Implement actual broker connection logic
   return {
     success: true,
@@ -27,7 +35,7 @@ export async function deleteBrokerConnection(id: string): Promise<{ success: boo
   }
 }
 
-export async function getBrokerConnections(): Promise<any[]> {
+export async function getBrokerConnections(): Promise<BrokerConnection[]> {
   // TODO: Implement actual fetch logic
   return []
 }

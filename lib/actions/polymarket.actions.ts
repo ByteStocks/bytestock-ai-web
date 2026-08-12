@@ -20,6 +20,15 @@ export interface PolymarketMarket {
     }>;
 }
 
+export interface PolymarketEvent {
+    id: string;
+    title: string;
+    slug: string;
+    markets: PolymarketMarket[];
+    active: boolean;
+    closed: boolean;
+}
+
 export interface PolymarketOrderBook {
     market_id: string;
     bids: Array<{
@@ -131,7 +140,7 @@ export async function getTrendingMarkets(): Promise<PolymarketMarket[]> {
     return response.json();
 }
 
-export async function getMarketEvents(): Promise<any[]> {
+export async function getMarketEvents(): Promise<PolymarketEvent[]> {
     const response = await fetch(
         `${POLYMARKET_DATA_API_URL}/events?active=true&limit=10`,
         { next: { revalidate: 300 } }

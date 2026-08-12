@@ -60,6 +60,18 @@ export interface KalshiPosition {
     realized_plus_education_pnl: number;
 }
 
+export interface KalshiTrade {
+    taker_side: 'yes' | 'no';
+    taker_action: 'buy' | 'sell';
+    taker_count: number;
+    taker_price: number;
+    created_time: string;
+    ticker: string;
+    count: number;
+    avg_price: number;
+    realized_pnl: number;
+}
+
 let authToken: string | null = null;
 
 async function getAuthToken(): Promise<string> {
@@ -196,13 +208,13 @@ export async function getTrades(params?: {
     cursor?: string;
     ticker?: string;
     event_ticker?: string;
-}): Promise<any[]> {
+}): Promise<KalshiTrade[]> {
     const searchParams = new URLSearchParams();
     if (params?.limit) searchParams.set('limit', params.limit.toString());
     if (params?.cursor) searchParams.set('cursor', params.cursor);
     if (params?.ticker) searchParams.set('ticker', params.ticker);
     if (params?.event_ticker) searchParams.set('event_ticker', params.event_ticker);
 
-    const response = await kalshiRequest<{ trades: any[] }>(`/trades?${searchParams.toString()}`);
+    const response = await kalshiRequest<{ trades: KalshiTrade[] }>(`/trades?${searchParams.toString()}`);
     return response.trades;
 }

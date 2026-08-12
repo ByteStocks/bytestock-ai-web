@@ -12,7 +12,7 @@ type BrokerProvider = 'zerodha' | 'groww';
 
 type ConnectionListItem = {
   id: string;
-  broker: BrokerProvider;
+  broker: string;
   label: string;
   tokenHint: string;
   updatedAt: string;
@@ -61,10 +61,11 @@ const McpClient = ({ initialConnections }: { initialConnections: ConnectionListI
       return;
     }
 
-    if (result.connection) {
+    const connection = result.connection;
+    if (connection) {
       setConnections((prev) => {
-        const withoutUpdated = prev.filter((item) => item.id !== result.connection?.id);
-        return [result.connection, ...withoutUpdated];
+        const withoutUpdated = prev.filter((item) => item.id !== connection.id);
+        return [connection, ...withoutUpdated];
       });
     }
 

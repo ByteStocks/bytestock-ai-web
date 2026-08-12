@@ -6,7 +6,7 @@ export type Message = {
   content: string
 }
 
-export interface Chat extends Record<string, any> {
+export interface Chat extends Record<string, unknown> {
   id: string
   title: string
   createdAt: Date
@@ -35,7 +35,7 @@ export interface AuthResult {
   message: string
 }
 
-export interface User extends Record<string, any> {
+export interface User extends Record<string, unknown> {
   id: string
   email: string
   password: string
