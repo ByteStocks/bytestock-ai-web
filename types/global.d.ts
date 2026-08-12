@@ -215,6 +215,31 @@ declare global {
         threshold: number;
         changePercent?: number;
     };
+
+    type PredictionMarket = {
+        id: string;
+        question: string;
+        description: string;
+        end_date: string;
+        volume: number;
+        active: boolean;
+        outcomes: string[];
+        outcome_prices: number[];
+    };
+
+    type KalshiMarket = {
+        ticker: string;
+        title: string;
+        description: string;
+        status: 'open' | 'closed' | 'settled';
+        close_time: string;
+        volume: number;
+        last_price: number;
+        yes_bid: number;
+        yes_ask: number;
+        no_bid: number;
+        no_ask: number;
+    };
 }
 
 export {};
