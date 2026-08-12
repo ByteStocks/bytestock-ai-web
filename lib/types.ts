@@ -1,7 +1,9 @@
-import { CoreMessage } from 'ai'
+export type MessageRole = 'user' | 'assistant' | 'system'
 
-export type Message = CoreMessage & {
+export type Message = {
   id: string
+  role: MessageRole
+  content: string
 }
 
 export interface Chat extends Record<string, any> {
@@ -38,4 +40,34 @@ export interface User extends Record<string, any> {
   email: string
   password: string
   salt: string
+}
+
+export type RawNewsArticle = {
+  id?: number
+  headline?: string
+  summary?: string
+  source?: string
+  url?: string
+  datetime?: number
+  image?: string
+  category?: string
+  related?: string
+}
+
+export type MarketNewsArticle = {
+  id: number
+  headline: string
+  summary: string
+  source: string
+  url: string
+  datetime: number
+  image?: string
+  category: string
+  related: string
+}
+
+export type UserForNewsEmail = {
+  id: string
+  email: string
+  name: string
 }

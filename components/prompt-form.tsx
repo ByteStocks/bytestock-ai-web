@@ -3,9 +3,7 @@
 import * as React from 'react'
 import Textarea from 'react-textarea-autosize'
 
-import { useActions, useUIState } from '@ai-sdk/rsc'
-
-import { type AI } from '@/lib/chat/actions'
+import { useChat, useActions } from '@/lib/chat/actions'
 import { Button } from '@/components/ui/button'
 import { IconArrowDown, IconPlus } from '@/components/ui/icons'
 import {
@@ -14,11 +12,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
-import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
-
-import { useLocalStorage } from '@/lib/hooks/use-local-storage'
-import { UserMessage } from './stock/message'
 
 export function PromptForm({
   input,
@@ -31,8 +25,7 @@ export function PromptForm({
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const { submitUserMessage } = useActions()
-  const [_, setMessages] = useUIState<typeof AI>()
-  const [apiKey, setApiKey] = useLocalStorage('groqKey', '')
+  const { isLoading } = useChat()
 
   React.useEffect(() => {
     if (inputRef.current) {
@@ -43,30 +36,21 @@ export function PromptForm({
   return (
     <form
       ref={formRef}
-      onSubmit={async (e: any) => {
+      onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         // Blur focus on mobile
         if (window.innerWidth < 600) {
-          e.target['message']?.blur()
+          const target = e.target as HTMLFormElement
+          const messageInput = target.elements.namedItem('message') as HTMLTextAreaElement | null
+          messageInput?.blur()
         }
 
         const value = input.trim()
         setInput('')
         if (!value) return
 
-        // Optimistically add user message UI
-        setMessages((currentMessages:any) => [
-          ...currentMessages,
-          {
-            id: nanoid(),
-            display: <UserMessage>{value}</UserMessage>
-          }
-        ])
-
-        // Submit and get response message
-        const responseMessage = await submitUserMessage(value, apiKey)
-        setMessages((currentMessages:any) => [...currentMessages, responseMessage])
+        await submitUserMessage(value)
       }}
     >
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:border sm:px-12">
@@ -104,7 +88,7 @@ export function PromptForm({
         <div className="absolute right-0 top-[13px] sm:right-4">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button type="submit" size="icon" disabled={input === ''}>
+              <Button type="submit" size="icon" disabled={input === '' || isLoading}>
                 <div className="rotate-180">
                   <IconArrowDown />
                 </div>

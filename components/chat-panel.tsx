@@ -5,8 +5,7 @@ import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
 import { IconShare } from '@/components/ui/icons'
 import { FooterText } from '@/components/footer'
-import { useAIState, useActions, useUIState } from '@ai-sdk/rsc'
-import type { AI } from '@/lib/chat/actions'
+import { useChat, useActions } from '@/lib/chat/actions'
 import { nanoid } from 'nanoid'
 import { UserMessage } from './stock/message'
 
@@ -27,8 +26,7 @@ export function ChatPanel({
   isAtBottom,
   scrollToBottom
 }: ChatPanelProps) {
-  const [aiState] = useAIState()
-  const [messages, setMessages] = useUIState<typeof AI>()
+  const { messages, setMessages, isLoading } = useChat()
   const { submitUserMessage } = useActions()
 
   const exampleMessages = [
@@ -99,21 +97,16 @@ export function ChatPanel({
                     ${index >= 2 ? 'hidden 2xl:block' : ''}
                   `}
                 onClick={async () => {
-                  setMessages((currentMessages:any) => [
+                  setMessages((currentMessages) => [
                     ...currentMessages,
                     {
                       id: nanoid(),
-                      display: <UserMessage>{example.message}</UserMessage>
+                      role: 'user',
+                      content: example.message
                     }
                   ])
 
-                  const responseMessage = await submitUserMessage(
-                    example.message
-                  )
-                  setMessages((currentMessages:any) => [
-                    ...currentMessages,
-                    responseMessage
-                  ])
+                  await submitUserMessage(example.message)
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>

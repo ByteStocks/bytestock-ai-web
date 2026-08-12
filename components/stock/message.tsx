@@ -7,8 +7,6 @@ import { CodeBlock } from '../ui/codeblock'
 import { MemoizedReactMarkdown } from '../markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { StreamableValue, useStreamableValue } from '@ai-sdk/rsc'
-import { useStreamableText } from '@/lib/hooks/use-streamable-text'
 
 // Different types of message bubbles.
 
@@ -29,11 +27,9 @@ export function BotMessage({
   content,
   className
 }: {
-  content: string | StreamableValue<string>
+  content: string
   className?: string
 }) {
-  const text = useStreamableText(content)
-
   return (
     <div className={cn('group relative flex items-start md:-ml-12', className)}>
       <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-[#f55036] text-primary-foreground shadow-sm">
@@ -47,24 +43,23 @@ export function BotMessage({
               return <p className="mb-2 last:mb-0">{children}</p>
             },
             code({ node, className, children, ...props }) {
+              // 1️⃣ Normalize children immediately
+              let text = ''
 
-                  // 1️⃣ Normalize children immediately
-  let text = ''
+              if (typeof children === 'string') {
+                text = children
+              } else if (Array.isArray(children)) {
+                text = children.join('')
+              } else {
+                return null
+              }
 
-  if (typeof children === 'string') {
-    text = children
-  } else if (Array.isArray(children)) {
-    text = children.join('')
-  } else {
-    return null
-  }
-
-  // 2️⃣ Streaming cursor
-  if (text === '▍') {
-    return (
-      <span className="mt-1 animate-pulse cursor-default">▍</span>
-    )
-  }
+              // 2️⃣ Streaming cursor
+              if (text === '▍') {
+                return (
+                  <span className="mt-1 animate-pulse cursor-default">▍</span>
+                )
+              }
 
               if (children.length) {
                 if (children[0] == '▍') {
@@ -72,13 +67,12 @@ export function BotMessage({
                     <span className="mt-1 animate-pulse cursor-default">▍</span>
                   )
                 }
-
               }
 
               const cleanedText = text.replace('`▍`', '▍')
               const match = /language-(\w+)/.exec(className ?? '')
               const isInline = !className
-            
+
               if (isInline) {
                 return (
                   <code
@@ -92,19 +86,11 @@ export function BotMessage({
                   </code>
                 )
               }
-            
-            //   if (inline) {
-            //     return (
-            //       <code className={className} {...props}>
-            //         {children}
-            //       </code>
-            //     )
-            //   }
 
               return (
                 <CodeBlock
-                key={`${match?.[1] ?? 'code'}-${String(children).length}`}
-                language={(match && match[1]) || ''}
+                  key={`${match?.[1] ?? 'code'}-${String(children).length}`}
+                  language={(match && match[1]) || ''}
                   value={String(children).replace(/\n$/, '')}
                   {...props}
                 />
@@ -112,7 +98,7 @@ export function BotMessage({
             }
           }}
         >
-          {text}
+          {content}
         </MemoizedReactMarkdown>
       </div>
     </div>
@@ -165,5 +151,3 @@ export function SpinnerMessage() {
     </div>
   )
 }
-
-

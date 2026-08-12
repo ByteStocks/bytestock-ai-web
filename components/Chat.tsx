@@ -6,7 +6,7 @@ import { ChatPanel } from '@/components/chat-panel'
 import { EmptyScreen } from '@/components/empty-screen'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { useEffect, useState } from 'react'
-import { useUIState, useAIState } from '@ai-sdk/rsc'
+import { useChat } from '@/lib/chat/actions'
 import { Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
@@ -25,8 +25,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
-  const [messages] = useUIState()
-  const [aiState] = useAIState()
+  const { messages, isLoading } = useChat()
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
 
@@ -37,14 +36,6 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
       }
     }
   }, [id, path, session?.user, messages])
-
-  useEffect(() => {
-    const messagesLength = aiState.messages?.length
-    if (messagesLength === 2) {
-      router.refresh()
-    }
-    console.log('Value: ', aiState.messages)
-  }, [aiState.messages, router])
 
   useEffect(() => {
     setNewChatId(id)
