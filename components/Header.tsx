@@ -3,19 +3,11 @@ import Image from "next/image";
 import NavItems from "@/components/NavItems";
 import UserDropdown from "@/components/UserDropdown";
 import {searchStocks} from "@/lib/actions/finnhub.actions";
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@/lib/auth/server";
 
 const Header = async () => {
-    const clerkUser = await currentUser();
+    const user = await currentUser();
     const initialStocks = await searchStocks();
-
-    const user = clerkUser ? {
-        id: clerkUser.id,
-        firstName: clerkUser.firstName,
-        lastName: clerkUser.lastName,
-        imageUrl: clerkUser.imageUrl,
-        emailAddresses: clerkUser.emailAddresses.map((email) => ({ emailAddress: email.emailAddress })),
-    } : null;
 
     return (
         <header className="sticky top-0 header">

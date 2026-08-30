@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth/server';
 import { getMarkets, searchMarkets, getTrendingMarkets, getEvents, getCategories } from '@/lib/actions/kalshi.actions';
 
 export async function GET(request: NextRequest) {

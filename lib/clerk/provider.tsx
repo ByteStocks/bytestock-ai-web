@@ -1,11 +1,7 @@
 'use client';
 
-import { ClerkProvider } from '@clerk/nextjs';
+import { AuthProvider } from '@/lib/auth/context';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-    return (
-        <ClerkProvider>
-            {children}
-        </ClerkProvider>
-    );
+  return <AuthProvider>{children}</AuthProvider>;
 }

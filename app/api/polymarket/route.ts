@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth } from '@/lib/auth/server';
 import { getMarkets, searchMarkets, getTrendingMarkets } from '@/lib/actions/polymarket.actions';
 
 export async function GET(request: NextRequest) {

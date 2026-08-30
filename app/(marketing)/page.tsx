@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
     ArrowRight,
     BarChart3,
@@ -19,7 +20,7 @@ import {
     Wallet,
     Zap,
 } from "lucide-react";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 
 const FEATURES = [
     {
@@ -207,69 +208,17 @@ export default async function HomePage() {
                         </div>
                     </div>
 
-                    {/* Mock dashboard preview */}
+                    {/* Dashboard preview */}
                     <div className="mt-14 md:mt-20 relative">
                         <div className="mx-auto max-w-5xl rounded-2xl border border-gray-800 bg-gray-800/40 p-3 shadow-2xl backdrop-blur">
-                            <div className="rounded-xl bg-gray-900 border border-gray-800 p-5">
-                                <div className="flex items-center justify-between mb-5">
-                                    <div className="flex items-center gap-2">
-                                        <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-                                        <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-                                        <span className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
-                                        <span className="ml-3 text-xs text-gray-500">app.signalist.io / dashboard</span>
-                                    </div>
-                                    <span className="text-xs text-gray-500">Live preview</span>
-                                </div>
-                                <div className="grid gap-3 md:grid-cols-3">
-                                    {[
-                                        { s: "AAPL", p: "$228.14", c: "+1.42%", up: true },
-                                        { s: "NVDA", p: "$142.65", c: "+2.87%", up: true },
-                                        { s: "TSLA", p: "$219.31", c: "-0.93%", up: false },
-                                        { s: "MSFT", p: "$415.50", c: "+0.71%", up: true },
-                                        { s: "AMZN", p: "$189.07", c: "+0.34%", up: true },
-                                        { s: "META", p: "$512.30", c: "-0.18%", up: false },
-                                    ].map((q) => (
-                                        <div
-                                            key={q.s}
-                                            className="rounded-lg border border-gray-800 bg-gray-800/50 p-3"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm font-semibold text-gray-100">{q.s}</span>
-                                                <span className="text-xs text-gray-500">NASDAQ</span>
-                                            </div>
-                                            <div className="mt-2 flex items-center justify-between">
-                                                <span className="text-lg font-bold text-gray-100">{q.p}</span>
-                                                <span
-                                                    className={
-                                                        q.up
-                                                            ? "text-xs font-semibold text-teal-400"
-                                                            : "text-xs font-semibold text-red-500"
-                                                    }
-                                                >
-                                                    {q.c}
-                                                </span>
-                                            </div>
-                                            <div className="mt-3 h-8 flex items-end gap-0.5">
-                                                {Array.from({ length: 24 }).map((_, i) => {
-                                                    const h = 4 + ((i * 17) % 28);
-                                                    const positive = q.up;
-                                                    return (
-                                                        <span
-                                                            key={i}
-                                                            className={
-                                                                positive
-                                                                    ? "flex-1 rounded-sm bg-teal-400/70"
-                                                                    : "flex-1 rounded-sm bg-red-500/70"
-                                                            }
-                                                            style={{ height: `${h}px` }}
-                                                        />
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            <Image
+                                src="/assets/images/dashboard.png"
+                                alt="Signalist dashboard preview"
+                                width={1920}
+                                height={1080}
+                                className="w-full h-auto rounded-xl"
+                                priority
+                            />
                         </div>
                     </div>
                 </div>
