@@ -7,6 +7,7 @@ import {
     Brain,
     ChevronRight,
     Compass,
+    FileSearch,
     Globe2,
     LineChart,
     Link2,
@@ -64,6 +65,12 @@ const FEATURES = [
         title: "Valuations & portfolio tracking",
         description:
             "Track holdings, visualize performance across sectors, and monitor valuations — all across your connected brokerage accounts.",
+    },
+    {
+        icon: FileSearch,
+        title: "Deep company analysis",
+        description:
+            "Profiles, financials, technicals, and competitive context for every ticker — all in one beautifully organized view.",
     },
     {
         icon: Target,
