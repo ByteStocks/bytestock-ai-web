@@ -14,6 +14,7 @@ const PRODUCT_LINKS = [
 const COMPANY_LINKS = [
     { href: "/support", label: "Support" },
     { href: "/privacy", label: "Privacy policy" },
+    { href: "/terms", label: "Terms of service" },
     { href: "/#features", label: "Features" },
     { href: "/#faq", label: "FAQ" },
 ];
@@ -35,7 +36,7 @@ export const MarketingFooter = () => {
                         />
                     </Link>
                     <p className="mt-4 text-sm text-gray-500 max-w-xs">
-                        Real-time market intelligence, AI-powered analysis, and personalized alerts for serious investors.
+                        AI-powered stock analysis, brokerage integration, and sentiment-driven recommendations for modern investors.
                     </p>
                 </div>
 

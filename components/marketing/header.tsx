@@ -52,6 +52,9 @@ export const MarketingHeader = ({ isAuthenticated }: { isAuthenticated: boolean 
                     <Link href="/privacy" className={cn("marketing-nav-link", isActive("/privacy") && "active")}>
                         Privacy
                     </Link>
+                    <Link href="/terms" className={cn("marketing-nav-link", isActive("/terms") && "active")}>
+                        Terms
+                    </Link>
                 </nav>
 
                 <div className="flex items-center gap-2">

@@ -7,9 +7,9 @@ import {
     Brain,
     ChevronRight,
     Compass,
-    FileSearch,
     Globe2,
     LineChart,
+    Link2,
     Mail,
     Newspaper,
     PieChart,
@@ -30,10 +30,22 @@ const FEATURES = [
             "Stream live quotes for thousands of stocks, ETFs, and indices with millisecond-level precision so you never miss a move.",
     },
     {
-        icon: Brain,
-        title: "AI market analyst",
+        icon: Link2,
+        title: "Brokerage account integration",
         description:
-            "Ask anything in plain English. Get streaming, citation-backed insights on fundamentals, sentiment, and technicals.",
+            "Connect multiple brokerage accounts to track all your investments, trades, and portfolio performance in a single unified dashboard.",
+    },
+    {
+        icon: Brain,
+        title: "Sentiment AI analysis",
+        description:
+            "News-driven sentiment scoring and AI-powered analysis help you understand the narratives behind every price movement.",
+    },
+    {
+        icon: Sparkles,
+        title: "AI investment recommendations",
+        description:
+            "Ask anything in plain English. Get streaming, citation-backed insights on fundamentals, sentiment, and technicals — not financial advice, but powerful research.",
     },
     {
         icon: Bell,
@@ -43,21 +55,15 @@ const FEATURES = [
     },
     {
         icon: Newspaper,
-        title: "Curated market news",
+        title: "News-based trading insights",
         description:
-            "Personalized news digests powered by your watchlist and the broader market, delivered the moment stories break.",
-    },
-    {
-        icon: FileSearch,
-        title: "Deep company analysis",
-        description:
-            "Profiles, financials, technicals, and competitive context for every ticker — all in one beautifully organized view.",
+            "Personalized news digests powered by your watchlist and AI sentiment analysis, delivered the moment stories break.",
     },
     {
         icon: PieChart,
-        title: "Watchlist that thinks",
+        title: "Valuations & portfolio tracking",
         description:
-            "Track holdings, set targets, and visualize performance across sectors and themes in a clean unified dashboard.",
+            "Track holdings, visualize performance across sectors, and monitor valuations — all across your connected brokerage accounts.",
     },
     {
         icon: Target,
@@ -71,12 +77,6 @@ const FEATURES = [
         description:
             "Aggregate Polymarket and Kalshi alongside traditional markets to spot where consensus is forming before consensus does.",
     },
-    {
-        icon: Mail,
-        title: "Daily briefings in your inbox",
-        description:
-            "Wake up to a personalized morning brief covering your watchlist, top movers, and AI-curated headlines.",
-    },
 ];
 
 const STEPS = [
@@ -85,16 +85,16 @@ const STEPS = [
         description: "Sign up in under a minute — no credit card, no commitments, just access.",
     },
     {
-        title: "Build your watchlist",
-        description: "Search any ticker and star the names you want tracked across every screen.",
+        title: "Connect your brokerages",
+        description: "Link your brokerage accounts via secure OAuth so Signalist can unify your portfolio.",
     },
     {
-        title: "Set alerts & strategies",
-        description: "Define price thresholds, pick a strategy, or just ask the AI — Signalist handles the rest.",
+        title: "Build your watchlist & set alerts",
+        description: "Add tickers, set price thresholds, and let AI surface the news and sentiment that matters.",
     },
     {
-        title: "React in real time",
-        description: "Get notified the moment conditions are met and dig into the news driving the move.",
+        title: "Trade with intelligence",
+        description: "Get AI-powered analysis, sentiment scores, and real-time alerts to make informed decisions.",
     },
 ];
 
@@ -107,17 +107,17 @@ const STATS = [
 
 const TESTIMONIALS = [
     {
-        quote: "Signalist turned my watchlist into a winning list. The alerts are spot-on and I feel more confident making moves in the market.",
+        quote: "Connecting my brokerage accounts gave me a complete picture of my portfolio for the first time. The sentiment alerts are a game-changer.",
         author: "Ethan R.",
         role: "Retail Investor",
     },
     {
-        quote: "The AI summaries save me hours every week. It's like having a junior analyst on staff that never sleeps.",
+        quote: "The AI summaries and sentiment scores save me hours every week. It's like having a junior analyst on staff that never sleeps.",
         author: "Priya S.",
         role: "Active Trader",
     },
     {
-        quote: "Market data, news, financials, and backtests — finally in one place. I closed two other apps after switching.",
+        quote: "Portfolio tracking, news sentiment, valuations, and backtests — finally in one place. I closed three other apps after switching.",
         author: "Marcus L.",
         role: "Long-term Investor",
     },
@@ -129,20 +129,20 @@ const FAQS = [
         a: "Yes. The core experience — real-time quotes, watchlists, price alerts, AI summaries, and news — is free while we're in beta. Premium add-ons are coming soon.",
     },
     {
-        q: "Where does the market data come from?",
-        a: "We aggregate best-in-class providers (including Finnhub and TradingView) and normalize the data so you get consistent quotes across every screen.",
+        q: "How does brokerage integration work?",
+        a: "We use secure OAuth flows to connect to your brokerage. Signalist never sees your login credentials — we only access read-only portfolio data to display your holdings and trades.",
     },
     {
         q: "Does Signalist give investment advice?",
-        a: "No. We surface data, news, and AI-powered analysis to help you research faster. Nothing on Signalist is a recommendation to buy or sell any security.",
+        a: "No. We surface data, news, AI-powered analysis, and sentiment scores to help you research faster. Nothing on Signalist is a recommendation to buy or sell any security.",
+    },
+    {
+        q: "How does the sentiment AI work?",
+        a: "We aggregate news from trusted sources and apply machine-learning sentiment scoring to help you understand the narratives driving price movements. Scores are estimates, not guarantees.",
     },
     {
         q: "Can I track assets outside the US?",
         a: "Yes. Signalist supports equities, ETFs, indices, FX pairs, prediction markets, and more — across North America, Europe, and Asia.",
-    },
-    {
-        q: "How do alerts work?",
-        a: "Choose a stock, set an upper or lower price threshold, and we'll email you the instant the condition is met. You can manage thresholds anytime from your dashboard.",
     },
 ];
 
@@ -172,9 +172,10 @@ export default async function HomePage() {
                             </span>
                         </h1>
                         <p className="mt-5 text-base md:text-lg text-gray-400 max-w-2xl">
-                            Track real-time stock prices, get personalized alerts, and explore detailed
-                            company insights — all in one beautifully focused dashboard built for the
-                            next generation of investors.
+                            Track stocks with AI-powered sentiment analysis, connect multiple brokerage
+                            accounts to monitor your portfolio in one place, and get intelligent
+                            investment recommendations — all in one beautifully focused platform built
+                            for the next generation of investors.
                         </p>
 
                         <div className="mt-8 flex flex-col sm:flex-row gap-3">
@@ -195,15 +196,15 @@ export default async function HomePage() {
                             </span>
                             <span className="marketing-pill">
                                 <Brain className="h-3.5 w-3.5 text-teal-400" />
-                                GPT-powered AI
+                                Sentiment AI
                             </span>
                             <span className="marketing-pill">
-                                <Bell className="h-3.5 w-3.5 text-orange-500" />
-                                Price alerts
+                                <Link2 className="h-3.5 w-3.5 text-orange-500" />
+                                Brokerage sync
                             </span>
                             <span className="marketing-pill">
                                 <Mail className="h-3.5 w-3.5 text-blue-600" />
-                                Daily briefings
+                                Smart alerts
                             </span>
                         </div>
                     </div>
@@ -248,7 +249,7 @@ export default async function HomePage() {
                     </h2>
                     <p className="marketing-section-subtitle mx-auto">
                         From the first quote of the day to the close, Signalist keeps you informed,
-                        organized, and a step ahead.
+                        organized, and a step ahead with brokerage sync, sentiment AI, and smart alerts.
                     </p>
                 </div>
 
@@ -279,8 +280,8 @@ export default async function HomePage() {
                         From sign-up to your first smart alert in minutes.
                     </h2>
                     <p className="marketing-section-subtitle">
-                        Signalist is designed to get out of your way. No bloated dashboards, no noisy
-                        feeds — just the data and insights that matter.
+                        Signalist is designed to get out of your way. Connect your brokerages, set your
+                        preferences, and let AI handle the research.
                     </p>
                 </div>
 
@@ -334,11 +335,11 @@ export default async function HomePage() {
                     <div className="marketing-hero-glow" aria-hidden />
                     <TrendingUp className="mx-auto h-10 w-10 text-yellow-500" />
                     <h2 className="mt-5 text-3xl md:text-4xl font-bold text-gray-100 tracking-tight">
-                        Start tracking the market smarter.
+                        Start trading smarter with AI.
                     </h2>
                     <p className="mt-3 text-base md:text-lg text-gray-400 max-w-xl mx-auto">
-                        Join Signalist for free and turn the noise of the market into clear, actionable
-                        insight.
+                        Join Signalist for free, connect your brokerages, and turn market noise into
+                        clear, actionable insight powered by sentiment AI.
                     </p>
                     <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
                         <Link href={ctaHref} className="marketing-cta">

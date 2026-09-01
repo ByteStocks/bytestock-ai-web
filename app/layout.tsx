@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Bytecode",
-  description: "Track real-time stock prices, get personalized alerts and explore detailed company insights.",
+  description: "Track stocks, connect brokerage accounts, analyze sentiment, and get AI-powered investment recommendations — all in one intelligent platform.",
   other: {
     'base:app_id': '6a720eea2c28265d6761732b',
   },
